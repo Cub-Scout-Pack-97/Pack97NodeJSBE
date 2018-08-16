@@ -5,12 +5,12 @@
 **/
 
 const hapi = require('hapi'); 
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://i:i@localhost:27017/pack97');
-mongoose.connection.once('open',() => {
-	console.log("connected to db");
-});
+// mongoose.connect('mongodb://i:i@localhost:27017/pack97');
+// mongoose.connection.once('open',() => {
+// 	console.log("connected to db");
+// });
 
 const server = hapi.server({
 	port:4477,

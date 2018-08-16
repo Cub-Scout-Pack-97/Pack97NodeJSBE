@@ -1,22 +1,19 @@
-FROM alpine
+FROM mhart/alpine-node:latest
 ## Use Alpine as the OS because of it's size
 
 MAINTAINER John Kelley johnkelley4477@gmail.com
 
 ## Update package definitions
-RUN apk update
-
-## Upgrade packages
-RUN apk upgrade
+RUN apk upgrade --update
 
 ## Add MongoDB
-RUN apk add mongodb
+## RUN apk add mongodb
 
 ## Install NodeJs
-RUN apk add nodejs
+## RUN apk add nodejs
 
 ## Install npm
-RUN apk add --update nodejs nodejs-npm
+## RUN apk add --update nodejs nodejs-npm
 
 ## Install GIT
 RUN apk add git
@@ -33,6 +30,6 @@ WORKDIR /Pack97NodeJSBE
 ## Install dependances
 ## RUN npm install
 
-EXPOSE 3004
+EXPOSE 4477
 
 ## CMD [ "npm", "start" ]

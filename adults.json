@@ -1,0 +1,35 @@
+{
+	"pack": "97",
+	"adults":[
+		{
+			"id":"a0001",
+			"bsaid":"90890u0uwj",
+			"first-name":"John",
+			"last-name":"Kelley",
+			"gender":"Male",
+			"scouts":["s0001","s0002"],
+			"phone":8605919758,
+			"email":"johnkelley4477@gmail.com"
+		},
+		{
+			"id":"a0002",
+			"bsaid":"",
+			"first-name":"Katie",
+			"last-name":"Bolton-Kelley",
+			"gender":"Female",
+			"scouts":["s0001","s0002"],
+			"phone":8602041086,
+			"email":"kbeemer18@gmail.com"
+		},
+		{
+			"id":"a0003",
+			"bsaid":"90890u0uwj",
+			"first-name":"James",
+			"last-name":"Forbs",
+			"gender":"Male",
+			"family":["s0003"],
+			"phone":8602041086,
+			"email":"sfsdfs@gmail.com"
+		}
+	]
+}

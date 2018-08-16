@@ -9,12 +9,6 @@ RUN apk upgrade --update
 ## Add MongoDB
 ## RUN apk add mongodb
 
-## Install NodeJs
-## RUN apk add nodejs
-
-## Install npm
-## RUN apk add --update nodejs nodejs-npm
-
 ## Install GIT
 RUN apk add git
 
@@ -27,9 +21,12 @@ RUN git clone https://github.com/johnkelley4477/Pack97NodeJSBE.git
 ## Create Working Dir
 WORKDIR /Pack97NodeJSBE
 
+## Checkout develop branch
+RUN git checkout develop
+
 ## Install dependances
-## RUN npm install
+RUN npm install
 
 EXPOSE 4477
 
-## CMD [ "npm", "start" ]
+CMD [ "npm", "start" ]

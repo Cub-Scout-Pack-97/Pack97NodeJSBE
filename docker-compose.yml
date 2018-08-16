@@ -1,0 +1,14 @@
+version: "2"
+services:
+  backend:
+    build: .
+    ports:
+      - "4477:4477"
+    link: 
+      - mongo
+  mongo:
+    image: mongo
+    volumes:
+      - /data/mongodb/db:/data/db
+    port:
+      - "27017:27017"

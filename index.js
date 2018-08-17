@@ -59,8 +59,7 @@ mongoose.connection.once('open',() => {
 	};
 
 
-	
+	init();
 });
 
 
-init();

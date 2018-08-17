@@ -23,7 +23,7 @@ const options = {
 
 
 
-mongoose.connect('mongodb://mongo:27017/pack97',options);
+mongoose.connect('mongodb://localhost:27017/pack97');
 mongoose.connection.once('open',() => {
 	console.log("connected to db");
 });
@@ -39,14 +39,13 @@ const init = async () => {
 			method:'GET',
 			path:'/',
 			handler: function(request,reply){
-				return '<hi>APIs ROCK!!!!!!!!!!!!!!!!!!!!!!</h1>';
+				return '<hi>APIs ROCK!!!!!!!!!!!!!!!!!!!!!!</h1><h2>It would be cool if this works</h2>';
 			}
 		},
 		{
 			method:'GET',
 			path: '/api/pack97/scout',
 			handler:(req, reply) =>{
-				console.log(req);
 				return Scout.find();
 			}
 		},
@@ -54,6 +53,8 @@ const init = async () => {
 			method:'POST',
 			path: '/api/pack97/scout',
 			handler: (req,reply) =>{
+
+				console.log(req.payload);
 				const {bsaid,first_name,last_name,gender,family,achevments,rank,den} = req.payload;
 				const scout = new Scout({
 					bsaid,

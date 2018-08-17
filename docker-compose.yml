@@ -4,14 +4,16 @@ services:
     image: mongo
     volumes:
       - ~/mongo-data:/data/db
-    ports:
-      - "27017:27017"
+    expose:
+      - 27017
   backend:
     build: .
     ports:
       - "4477:4477"
     links: 
       - mongo
+    volumes:
+      - ~/ProjectSandbox/Pack97NodeJSBE:/Pack97NodeJSBE
   frontend:
     image: pack97fe:v0.1
     ports:

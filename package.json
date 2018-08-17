@@ -4,7 +4,6 @@
   "description": "This is the NodeJS application that will create the API's to be consumed by the Pack97 web and mobile apps. ",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,7 +18,6 @@
   "homepage": "https://github.com/johnkelley4477/Pack97NodeJSBE#readme",
   "dependencies": {
     "hapi": "^17.5.3",
-    "mongoose": "^5.2.8",
-    "nodemon": "^1.18.3"
+    "mongoose": "^5.2.8"
   }
 }

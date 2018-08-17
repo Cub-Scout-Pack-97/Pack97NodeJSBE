@@ -15,18 +15,22 @@ RUN apk add git
 ## Move to dev folder
 RUN git clone https://github.com/johnkelley4477/Pack97NodeJSBE.git
 
-## Delete GIT
-## RUN apk del git
-
 ## Create Working Dir
 WORKDIR /Pack97NodeJSBE
 
 ## Checkout develop branch
 RUN git checkout develop
 
+## Delete GIT
+##RUN apk del git
+
 ## Install dependances
-RUN npm install
+## RUN npm install
 
 EXPOSE 4477
 
-CMD [ "npm", "start" ]
+CMD ["git", "pull https://github.com/johnkelley4477/Pack97NodeJSBE.git develop"]
+
+CMD ["npm", "install"]
+
+CMD [ "npm", "start"]

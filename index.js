@@ -6,7 +6,7 @@
 
 const hapi = require('hapi'); 
 const mongoose = require('mongoose');
-const Scout = require('./models/Scout');
+const Scout = require('./models/scout');
 
 mongoose.connect('mongodb://mongo/pack97');
 mongoose.connection.once('open',() => {

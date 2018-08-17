@@ -23,7 +23,7 @@ const options = {
 
 
 
-mongoose.connect('mongodb://mongo/pack97:27017',options);
+mongoose.connect('mongodb://mongo:27017/pack97',options);
 mongoose.connection.once('open',() => {
 	console.log("connected to db");
 });

@@ -6,6 +6,7 @@
 
 const hapi = require('hapi'); 
 const mongoose = require('mongoose');
+const Scout = require('./models/Scout');
 
 mongoose.connect('mongodb://mongo/pack97');
 mongoose.connection.once('open',() => {
@@ -19,13 +20,41 @@ const server = hapi.server({
 });
 
 const init = async () => {
-	server.route({
-		method:'GET',
-		path:'/',
-		handler: function(request,reply){
-			return '<hi>APIs ROCK!!!!!!!!!!!!!!!!!!!!!!</h1>';
+	server.route([
+		{
+			method:'GET',
+			path:'/',
+			handler: function(request,reply){
+				return '<hi>APIs ROCK!!!!!!!!!!!!!!!!!!!!!!</h1>';
+			}
+		},
+		{
+			method:'GET',
+			path: '/api/pack97/scout',
+			handler:(req, reply) =>{
+				return Scout.find();
+			}
+		},
+		{
+			method:'POST',
+			path: '/api/pack97/scout',
+			handler: (req,reply) =>{
+				const {bsaid,first_name,last_name,gender,family,achevments,rank,den} = req.payload;
+				const scout = new Scout({
+					bsaid,
+					first_name,
+					last_name,
+					gender,
+					family,
+					achevments,
+					rank,
+					den
+				});
+
+				return scout.save();
+			}
 		}
-	});
+	]);
 
 	await server.start();
 	console.log(`Server running at: ${server.info.uri}`);

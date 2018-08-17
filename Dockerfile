@@ -29,4 +29,4 @@ RUN npm install
 
 EXPOSE 4477
 
-CMD ["git pull https://github.com/johnkelley4477/Pack97NodeJSBE.git develop", "npm install", "node index.js"]
+CMD ["node", "index.js"]

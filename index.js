@@ -8,12 +8,6 @@ const hapi = require('hapi');
 const mongoose = require('mongoose');
 const Scout = require('./models/scout');
 
-mongoose.connect('mongodb://mongo/pack97');
-mongoose.connection.once('open',() => {
-	console.log("connected to db");
-});
-
-console.log("/n/n/n Test /n/n/n/n");
 const server = hapi.server({
 	port:4477,
 	host: '0.0.0.0'
@@ -32,7 +26,7 @@ const init = async () => {
 			method:'GET',
 			path: '/api/pack97/scout',
 			handler:(req, reply) =>{
-				console.log(`Succefully hit scout endpoint with ${req}`);
+				console.log(req);
 				return Scout.find();
 			}
 		},
@@ -60,5 +54,11 @@ const init = async () => {
 	await server.start();
 	console.log(`Server running at: ${server.info.uri}`);
 };
+
+mongoose.connect('mongodb://mongo/pack97');
+mongoose.connection.once('open',() => {
+	console.log("\n\n\n connected to db \n\n\n\n");
+});
+
 
 init();

@@ -25,7 +25,7 @@ RUN git checkout develop
 ##RUN apk del git
 
 ## Install dependances
-## RUN npm install
+RUN npm install
 
 EXPOSE 4477
 

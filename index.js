@@ -32,6 +32,7 @@ const init = async () => {
 			method:'GET',
 			path: '/api/pack97/scout',
 			handler:(req, reply) =>{
+				console.log(`Succefully hit scout endpoint with ${req}`);
 				return Scout.find();
 			}
 		},

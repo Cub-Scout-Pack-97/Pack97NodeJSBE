@@ -14,6 +14,8 @@ services:
       - mongo
     volumes:
       - ~/ProjectSandbox/Pack97NodeJSBE:/Pack97NodeJSBE
+    depends_on:
+    - mongo
   frontend:
     image: pack97fe:v0.1
     ports:

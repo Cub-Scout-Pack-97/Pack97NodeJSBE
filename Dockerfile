@@ -22,7 +22,7 @@ WORKDIR /Pack97NodeJSBE
 RUN git checkout develop
 
 ## Delete GIT
-##RUN apk del git
+## RUN apk del git
 
 ## Install dependances
 RUN npm install

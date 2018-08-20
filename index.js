@@ -22,11 +22,12 @@ const options = {
 };
 
 
-
-mongoose.connect('mongodb://localhost:27017/pack97');
-mongoose.connection.once('open',() => {
-	console.log("connected to db");
-});
+function connectDB(){
+	mongoose.connect('mongodb://172.18.0.2:27017/pack97');
+	mongoose.connection.once('open',() => {
+		console.log("connected to db");
+	});
+}
 
 const server = hapi.server({
 	port:4477,
@@ -46,6 +47,7 @@ const init = async () => {
 			method:'GET',
 			path: '/api/pack97/scout',
 			handler:(req, reply) =>{
+				connectDB();
 				return Scout.find();
 			}
 		},
@@ -53,8 +55,7 @@ const init = async () => {
 			method:'POST',
 			path: '/api/pack97/scout',
 			handler: (req,reply) =>{
-
-				console.log(req.payload);
+				connectDB();
 				const {bsaid,first_name,last_name,gender,family,achevments,rank,den} = req.payload;
 				const scout = new Scout({
 					bsaid,

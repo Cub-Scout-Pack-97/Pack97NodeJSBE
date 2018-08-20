@@ -29,4 +29,4 @@ RUN npm install
 
 EXPOSE 4477
 
-CMD ["node", "index.js"]
+CMD ["nodemon", "index.js"]

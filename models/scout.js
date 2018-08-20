@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ScoutSchema = new Schema({
+	_id: String,
 	bsaid: String,
 	first_name: String,
 	last_name: String,

@@ -23,10 +23,12 @@ const options = {
 
 
 function connectDB(){
-	mongoose.connect('mongodb://172.18.0.2:27017/pack97');
-	mongoose.connection.once('open',() => {
-		console.log("connected to db");
-	});
+	if(mongoose.connection.readyState === 0){
+		mongoose.connect('mongodb://172.18.0.2:27017/pack97');
+		mongoose.connection.once('open',() => {
+			console.log("connected to db");
+		});
+	}
 }
 
 const server = hapi.server({
@@ -40,12 +42,22 @@ const init = async () => {
 			method:'GET',
 			path:'/',
 			handler: function(request,reply){
-				return '<hi>APIs ROCK!!!!!!!!!!!!!!!!!!!!!!</h1><h2>It would be cool if this works</h2>';
+				return '<hi>APIs ROCK!</h1><h2>IT WORKED!!!</h2>';
 			}
 		},
 		{
 			method:'GET',
-			path: '/api/pack97/scout',
+			path: '/api/pack97/scout/id/{id}',
+			handler:(req, reply) =>{
+				const id = req.params.id;
+				console.log(`\n\n ${id} \n\n`);
+				connectDB();
+				return Scout.find({ _id: id });
+			}
+		},
+		{
+			method:'GET',
+			path: '/api/pack97/scouts',
 			handler:(req, reply) =>{
 				connectDB();
 				return Scout.find();

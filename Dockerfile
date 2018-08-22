@@ -6,9 +6,6 @@ MAINTAINER John Kelley johnkelley4477@gmail.com
 ## Update package definitions
 RUN apk upgrade --update
 
-## Add MongoDB
-## RUN apk add mongodb
-
 ## Install GIT
 RUN apk add git
 

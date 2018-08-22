@@ -141,6 +141,19 @@ const init = async () => {
 		},
 		{
 			/*
+				@method GET
+				@path /api/pack97/parent/email/{email}
+			 	@description Returns a list of all our parents
+			*/	
+			method:'GET',
+			path: '/api/pack97/parent/email/{email}',
+			handler:(req, reply) =>{
+				connectDB();
+				return Parent.find({email:req.params.email});
+			}
+		},
+		{
+			/*
 				@method POST
 				@path /api/pack97/parent
 					Schema:

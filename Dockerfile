@@ -21,11 +21,11 @@ RUN git checkout develop
 ## Delete GIT
 ## RUN apk del git
 
-## Install dependances
-RUN npm install
-
 ## Install Nodemon (dev) 
 RUN npm install -g nodemon
+
+## Install dependances
+RUN npm install
 
 EXPOSE 4477
 

@@ -9,6 +9,10 @@ RUN apk upgrade --update
 ## Install GIT
 RUN apk add git
 
+## RUN apk add python
+
+## RUN npm install --build-from-source=bcrypt
+
 ## Move to dev folder
 RUN git clone https://github.com/johnkelley4477/Pack97NodeJSBE.git
 

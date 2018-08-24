@@ -7,7 +7,7 @@
 
 const hapi = require('hapi'); 
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const Scout = require('./models/scout');
 const Parent = require('./models/parent');
 const Contact = require('./models/contact');

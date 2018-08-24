@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/johnkelley4477/Pack97NodeJSBE#readme",
   "dependencies": {
+    "bcrypt": "^3.0.0",
     "hapi": "^17.5.3",
     "mongoose": "^5.2.8",
     "nodemon": "^1.18.3"

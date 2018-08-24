@@ -1,3 +1,4 @@
+'use strict';
 /**
 * This is based off a tutorial from: https://medium.freecodecamp.org/how-to-setup-a-powerful-api-with-nodejs-graphql-mongodb-hapi-and-swagger-e251ac189649
 *
@@ -6,8 +7,10 @@
 
 const hapi = require('hapi'); 
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const Scout = require('./models/scout');
 const Parent = require('./models/parent');
+const Contact = require('./models/contact');
 
 function connectDB(){
 	if(mongoose.connection.readyState === 0 ){
@@ -111,6 +114,43 @@ const init = async () => {
 			}
 		},
 		{
+			/*
+				@method Post
+				@path /api/pack97/scout/update
+					
+					Schema
+						Scout:
+							{
+								bsaid: String,
+								first_name: String,
+								last_name: String,
+								gender: String,
+								family: [{}],
+								achevments: [{}],
+								rank: String,
+								den: String
+							}
+
+			 	@description Updates the parent's info, how's _id is passed
+			*/
+			method:'POST',
+			path: '/api/pack97/scout/update',
+			handler:(req,reply)=>{
+				const pId = req.payload._id;
+				return Scout.findById(pId, function(err,scout){
+					if (err) return handleError(`Could not find scout ${err}`);
+					scout.bsaid = req.payload.bsaid;
+					scout.first_name = req.payload.first_name;
+					scout.last_name = req.payload.last_name;
+					scout.gender = req.payload.gender;
+					scout.family = req.payload.family;
+					scout.phone = req.payload.phone;
+					scout.email = req.payload.email;
+					scout.save();
+				});
+			}
+		},
+		{
 			// ****************************************** Parents Routes ************************
 			/*
 				@method GET
@@ -156,7 +196,7 @@ const init = async () => {
 			/*
 				@method POST
 				@path /api/pack97/parent
-					Schema:
+					Parent:
 						{
 							bsaid: String,
 							first_name: String,
@@ -256,6 +296,159 @@ const init = async () => {
 					parent.family.splice(element,1);
 					parent.save();
 				});
+			}
+		},
+		{
+			/*
+				@method Post
+				@path /api/pack97/parent/update
+					
+					Schema
+						Parent:
+							{
+								bsaid: String,
+								first_name: String,
+								last_name: String,
+								gender: String,
+								family: [{}],
+								phone: String,
+								email: String
+							}
+
+			 	@description Updates the parent's info, how's _id is passed
+			*/
+			method:'POST',
+			path: '/api/pack97/parent/update',
+			handler:(req,reply)=>{
+				const pId = req.payload._id;
+				return Parent.findById(pId, function(err,parent){
+					if (err) return handleError(`Could not find parent ${err}`);
+					parent.bsaid = req.payload.bsaid;
+					parent.first_name = req.payload.first_name;
+					parent.last_name = req.payload.last_name;
+					parent.gender = req.payload.gender;
+					parent.family = req.payload.family;
+					parent.phone = req.payload.phone;
+					parent.email = req.payload.email;
+					parent.save();
+				});
+			}
+		},
+		{
+			/************************************** Contacts Info ******************************/
+			/*
+				@method POST
+				@path /api/pack97/contact
+					Schema:
+						{
+							bsaid: String,
+							first_name: String,
+							last_name: String,
+							gender: String,
+							title: String,
+							desc: String,
+							email: String
+						}
+			 	@description Add a Scout
+			*/
+			method:'POST',
+			path: '/api/pack97/contact',
+			handler: (req,reply) =>{
+				connectDB();
+				const {bsaid,first_name,last_name,gender,title,desc,email,isCommitee,isLeader} = req.payload;
+				const contact = new Contact({
+					bsaid,
+					first_name,
+					last_name,
+					gender,
+					title,
+					desc,
+					email,
+					isCommitee,
+					isLeader
+				});
+
+				return contact.save();
+			}
+		},
+		{
+			/*
+				@method GET
+				@path /api/pack97/leader/list
+			 	@description Returns a list of all our parents
+			*/	
+			method:'GET',
+			path: '/api/pack97/leader/list',
+			handler:(req, reply) =>{
+				connectDB();
+				return Contact.find().where('isLeader').equals('true');
+			}
+		},
+		{
+			/*
+				@method GET
+				@path /api/pack97/leader/list
+			 	@description Returns a list of all our parents
+			*/	
+			method:'GET',
+			path: '/api/pack97/commitee/list',
+			handler:(req, reply) =>{
+				connectDB();
+				return Contact.find().where('isCommitee').equals('true');
+			}
+		},
+		{
+			/*
+				@method Post
+				@path /api/pack97/contact/update
+					
+					Schema
+						Contact:
+							{
+								bsaid: String,
+								first_name: String,
+								last_name: String,
+								gender: String,
+								title: String,
+								desc: String,
+								email: String,
+								isCommitee: Boolean,
+								isLeader: Boolean
+							}
+
+			 	@description Updates the contact's info, how's _id is passed
+			*/
+			method:'POST',
+			path: '/api/pack97/contact/update',
+			handler:(req,reply)=>{
+				const cId = req.payload._id;
+				return Contact.findById(cId, function(err,contact){
+					if (err) return handleError(`Could not find parent ${err}`);
+					contact.bsaid = req.payload.bsaid;
+					contact.first_name = req.payload.first_name;
+					contact.last_name = req.payload.last_name;
+					contact.gender = req.payload.gender;
+					contact.title = req.payload.title;
+					contact.desc = req.payload.desc;
+					contact.email = req.payload.email;
+					contact.isCommitee = req.payload.isCommitee;
+					contact.isLeader = req.payload.isLeader;
+					contact.save();
+				});
+			}
+		},
+		{
+			//******************************** Password Handling ********************************
+
+			/*
+
+			*/
+			method:'POST',
+			path:'/api/pack97/password/new',
+			handler: (req,reply) => {
+				const email = req.payload.email;
+				const pass = req.payload.password;
+				return Contact.find().where('email').equals(email);
 			}
 		}
 	]);

@@ -7,10 +7,11 @@
 
 const hapi = require('hapi'); 
 const mongoose = require('mongoose');
-// const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const Scout = require('./models/scout');
-const Parent = require('./models/parent');
+const Event = require('./models/event');
 const Contact = require('./models/contact');
+const Password = require('./models/pass');
 
 function connectDB(){
 	if(mongoose.connection.readyState === 0 ){
@@ -110,6 +111,7 @@ const init = async () => {
 			method:'GET',
 			path: '/api/pack97/scout/del/{id}',
 			handler: (req,reply)=>{
+				connectDB();
 				return Scout.deleteOne({_id:req.params.id});
 			}
 		},
@@ -136,6 +138,7 @@ const init = async () => {
 			method:'POST',
 			path: '/api/pack97/scout/update',
 			handler:(req,reply)=>{
+				connectDB();
 				const pId = req.payload._id;
 				return Scout.findById(pId, function(err,scout){
 					if (err) return handleError(`Could not find scout ${err}`);
@@ -150,190 +153,157 @@ const init = async () => {
 				});
 			}
 		},
-		{
-			// ****************************************** Parents Routes ************************
-			/*
-				@method GET
-				@path /api/pack97/parent/id/{id}
-					{id} is the _id value
-			 	@description Returns the parent how's _id is passed
-			*/
-			method:'GET',
-			path: '/api/pack97/parent/id/{id}',
-			handler:(req, reply) =>{
-				connectDB();
-				const id = req.params.id;
-				return Parent.findById(id);
-			}
-		},
-		{
-			/*
-				@method GET
-				@path /api/pack97/parent/list
-			 	@description Returns a list of all our parents
-			*/	
-			method:'GET',
-			path: '/api/pack97/parent/list',
-			handler:(req, reply) =>{
-				connectDB();
-				return Parent.find({});
-			}
-		},
-		{
-			/*
-				@method GET
-				@path /api/pack97/parent/email/{email}
-			 	@description Returns a list of all our parents
-			*/	
-			method:'GET',
-			path: '/api/pack97/parent/email/{email}',
-			handler:(req, reply) =>{
-				connectDB();
-				return Parent.find({email:req.params.email});
-			}
-		},
-		{
-			/*
-				@method POST
-				@path /api/pack97/parent
-					Parent:
-						{
-							bsaid: String,
-							first_name: String,
-							last_name: String,
-							gender: String,
-							family: [{}],
-							phone: String,
-							email: String
-						}
-			 	@description Add a Parent
-			*/
-			method:'POST',
-			path: '/api/pack97/parent',
-			handler: (req,reply) =>{
-				connectDB();
-				const {bsaid,first_name,last_name,gender,family,phone,email} = req.payload;
-				const parent = new Parent({
-					bsaid,
-					first_name,
-					last_name,
-					gender,
-					family,
-					phone,
-					email
-				});
+		//{
+		// 	// ****************************************** Parents Routes ************************
+		// 	/*
+		// 		@method GET
+		// 		@path /api/pack97/parent/id/{id}
+		// 			{id} is the _id value
+		// 	 	@description Returns the parent how's _id is passed
+		// 	*/
+		// 	method:'GET',
+		// 	path: '/api/pack97/parent/id/{id}',
+		// 	handler:(req, reply) =>{
+		// 		connectDB();
+		// 		const id = req.params.id;
+		// 		return Parent.findById(id);
+		// 	}
+		// },
+		// {
+		// 	/*
+		// 		@method GET
+		// 		@path /api/pack97/parent/list
+		// 	 	@description Returns a list of all our parents
+		// 	*/	
+		// 	method:'GET',
+		// 	path: '/api/pack97/parent/list',
+		// 	handler:(req, reply) =>{
+		// 		connectDB();
+		// 		return Parent.find({});
+		// 	}
+		// },
+		// {
+		// 	/*
+		// 		@method GET
+		// 		@path /api/pack97/parent/email/{email}
+		// 	 	@description Returns a list of all our parents
+		// 	*/	
+		// 	method:'GET',
+		// 	path: '/api/pack97/parent/email/{email}',
+		// 	handler:(req, reply) =>{
+		// 		connectDB();
+		// 		return Parent.find({email:req.params.email});
+		// 	}
+		// },
+		// {
+		// 	/*
+		// 		@method POST
+		// 		@path /api/pack97/parent
+		// 			Parent:
+		// 				{
+		// 					bsaid: String,
+		// 					first_name: String,
+		// 					last_name: String,
+		// 					gender: String,
+		// 					family: [{}],
+		// 					phone: String,
+		// 					email: String
+		// 				}
+		// 	 	@description Add a Parent
+		// 	*/
+		// 	method:'POST',
+		// 	path: '/api/pack97/parent',
+		// 	handler: (req,reply) =>{
+		// 		connectDB();
+		// 		const {bsaid,first_name,last_name,gender,family,phone,email} = req.payload;
+		// 		const parent = new Parent({
+		// 			bsaid,
+		// 			first_name,
+		// 			last_name,
+		// 			gender,
+		// 			family,
+		// 			phone,
+		// 			email
+		// 		});
 
-				return parent.save();
-			}
-		},
-		{
-			/*
-				@method GET
-				@path /api/pack97/parent/del/{id}
-					{id} is the _id value
-			 	@description Removes the parent how's _id is passed
-			*/
-			method:'GET',
-			path: '/api/pack97/parent/del/{id}',
-			handler: (req,reply)=>{
-				return Parent.deleteOne({_id:req.params.id});
-			}
-		},
-		{
-			/*
-				@method Post
-				@path /api/pack97/parent/add/family
+		// 		return parent.save();
+		// 	}
+		// },
+		// {
+		// 	/*
+		// 		@method GET
+		// 		@path /api/pack97/parent/del/{id}
+		// 			{id} is the _id value
+		// 	 	@description Removes the parent how's _id is passed
+		// 	*/
+		// 	method:'GET',
+		// 	path: '/api/pack97/parent/del/{id}',
+		// 	handler: (req,reply)=>{
+		// 		connectDB();
+		// 		return Parent.deleteOne({_id:req.params.id});
+		// 	}
+		// },
+		
+		// {
+		// 	/*
+		// 		@method Post
+		// 		@path /api/pack97/parent/add/family
 					
-					Schema
-						Scout:
-							_id: String,
-							family: {
-								bsaid: String,
-								first_name: String,
-								last_name: String,
-								gender: String,
-								rank: String,
-								den: String	
-							}
-						Other:
-							_id: String,
-							family:{
-								first_name: String,
-								last_name: String,
-								gender: String
-							}
+		// 			Schema
+		// 				_id: String,
+		// 				element: Number
+		// 	 	@description Removes the person to the parent's family attribute, how's possition in the array is passed
+		// 	*/
+		// 	method:'POST',
+		// 	path: '/api/pack97/parent/remove/family',
+		// 	handler:(req,reply)=>{
+		// 		connectDB();
+		// 		const pId = req.payload._id;
+		// 		const element = req.payload.element;
+		// 		return Parent.findById(pId, function(err,parent){
+		// 			if (err) return handleError(`Could not find parent ${err}`);
+		// 			parent.family.splice(element,1);
+		// 			parent.save();
+		// 		});
+		// 	}
+		// },
+		// {
+		// 	/*
+		// 		@method Post
+		// 		@path /api/pack97/parent/update
+					
+		// 			Schema
+		// 				Parent:
+		// 					{
+		// 						bsaid: String,
+		// 						first_name: String,
+		// 						last_name: String,
+		// 						gender: String,
+		// 						family: [{}],
+		// 						phone: String,
+		// 						email: String
+		// 					}
 
-			 	@description Adds a person to the parent's family attribute, how's _id is passed
-			*/
-			method:'POST',
-			path: '/api/pack97/parent/add/family',
-			handler:(req,reply)=>{
-				const pId = req.payload._id;
-				return Parent.findById(pId, function(err,parent){
-					if (err) return handleError(`Could not find parent ${err}`);
-					parent.family.push(req.payload.family);
-					parent.save();
-				});
-			}
-		},
-		{
-			/*
-				@method Post
-				@path /api/pack97/parent/add/family
-					
-					Schema
-						_id: String,
-						element: Number
-			 	@description Removes the person to the parent's family attribute, how's possition in the array is passed
-			*/
-			method:'POST',
-			path: '/api/pack97/parent/remove/family',
-			handler:(req,reply)=>{
-				const pId = req.payload._id;
-				const element = req.payload.element;
-				return Parent.findById(pId, function(err,parent){
-					if (err) return handleError(`Could not find parent ${err}`);
-					parent.family.splice(element,1);
-					parent.save();
-				});
-			}
-		},
-		{
-			/*
-				@method Post
-				@path /api/pack97/parent/update
-					
-					Schema
-						Parent:
-							{
-								bsaid: String,
-								first_name: String,
-								last_name: String,
-								gender: String,
-								family: [{}],
-								phone: String,
-								email: String
-							}
-
-			 	@description Updates the parent's info, how's _id is passed
-			*/
-			method:'POST',
-			path: '/api/pack97/parent/update',
-			handler:(req,reply)=>{
-				const pId = req.payload._id;
-				return Parent.findById(pId, function(err,parent){
-					if (err) return handleError(`Could not find parent ${err}`);
-					parent.bsaid = req.payload.bsaid;
-					parent.first_name = req.payload.first_name;
-					parent.last_name = req.payload.last_name;
-					parent.gender = req.payload.gender;
-					parent.family = req.payload.family;
-					parent.phone = req.payload.phone;
-					parent.email = req.payload.email;
-					parent.save();
-				});
-			}
-		},
+		// 	 	@description Updates the parent's info, how's _id is passed
+		// 	*/
+		// 	method:'POST',
+		// 	path: '/api/pack97/parent/update',
+		// 	handler:(req,reply)=>{
+		// 		connectDB();
+		// 		const pId = req.payload._id;
+		// 		return Parent.findById(pId, function(err,parent){
+		// 			if (err) return handleError(`Could not find parent ${err}`);
+		// 			parent.bsaid = req.payload.bsaid;
+		// 			parent.first_name = req.payload.first_name;
+		// 			parent.last_name = req.payload.last_name;
+		// 			parent.gender = req.payload.gender;
+		// 			parent.family = req.payload.family;
+		// 			parent.phone = req.payload.phone;
+		// 			parent.email = req.payload.email;
+		// 			parent.save();
+		// 		});
+		// 	}
+		// },
 		{
 			/************************************** Contacts Info ******************************/
 			/*
@@ -369,6 +339,45 @@ const init = async () => {
 				});
 
 				return contact.save();
+			}
+		},
+		{
+			/*
+			@method Post
+			@path /api/pack97/parent/add/family
+				
+				Schema
+					Scout:
+						_id: String,
+						family: {
+							bsaid: String,
+							first_name: String,
+							last_name: String,
+							gender: String,
+							rank: String,
+							den: String	
+						}
+					Other:
+						_id: String,
+						family:{
+							first_name: String,
+							last_name: String,
+							gender: String
+						}
+
+
+		 	@description Adds a person to the parent's family attribute, how's _id is passed
+			*/
+			method:'POST',
+			path: '/api/pack97/parent/add/family',
+			handler:(req,reply)=>{
+				connectDB();
+				const pId = req.payload._id;
+				return Contact.findById(pId, function(err,contact){
+					if (err) return handleError(`Could not find parent ${err}`);
+					contact.family.push(req.payload.family);
+					contact.save();
+				});
 			}
 		},
 		{
@@ -421,6 +430,7 @@ const init = async () => {
 			method:'POST',
 			path: '/api/pack97/contact/update',
 			handler:(req,reply)=>{
+				connectDB();
 				const cId = req.payload._id;
 				return Contact.findById(cId, function(err,contact){
 					if (err) return handleError(`Could not find parent ${err}`);
@@ -445,15 +455,230 @@ const init = async () => {
 			*/
 			method:'POST',
 			path:'/api/pack97/password/new',
-			handler: (req,reply) => {
+			handler: async (req,reply) => {
+				connectDB();
 				const email = req.payload.email;
 				const pass = req.payload.password;
-				return Contact.find().where('email').equals(email);
+				const hashed = sha512(pass,genRandomString(20));
+				const emailFound = await Contact.find({email:email});
+				let responce = {"response":"We're currently experencing an issue. Please try again"};
+				
+				if(emailFound.length < 1 || emailFound[0].isUser === true){
+					return {'responce':'The email you entered cannot be found or you already have a password'};
+				}
+				const password = new Password({
+					email:email,
+					pass_hash: hashed.passwordHash,
+					pass_sec:hashed.salt});
+				responce = await password.save((err) => {
+					if(err){
+						return {'responce':'We were unable to save your password. Please try again.'};
+					}
+				});
+				responce = await Contact.update({email:email},{
+						isUser: true
+					}, (err, numberAffected, rawResponse) => {
+					   if(err){
+							return {'responce':'We were unable to save your password. Please try again.'};
+						}else{
+							return {'responce':numberAffected};
+						}
+					}
+				);
+				return responce;
 			}
+		},
+		{
+			/* 
+				
+			*/
+			method:'POST',
+			path:'/api/pack97/user/validation',
+			handler: async (req,h) => {
+				connectDB();
+				const email = req.payload.email;
+				const pass = req.payload.password;
+				let isValid = {"response":"Either your password or email are incorrect"};
+				const user = await Password.find({email:email});
+				if(user.length > 0){
+					const hashed = sha512(pass,user[0].pass_sec);
+					if(hashed.passwordHash === user[0].pass_hash){
+						isValid = {"responce":"success"};
+					}
+				}
+				return isValid;
+			}
+
+		},
+		{
+			/*
+
+			*/
+			method:'GET',
+			path:'/api/pack97/user/change/password/{secret}',
+			handler: async (req,h) =>{
+				connectDB();
+				const user = await Password.find({pass_sec:req.params.secret});
+				return user[0].email;
+			}
+		},
+		{
+			method:'POST',
+			path: '/api/pack97/password/update',
+			handler: async (req,reply)=>{
+				connectDB();
+				const email = req.payload.email;
+				const hashed = sha512(req.payload.pass,genRandomString(20));
+				let responce = {"response":"We're currently experencing an issue. Please try again"};
+				const user = await Password.update({email:email}, 
+					{
+						pass_hash: hashed.passwordHash,
+						pass_sec: hashed.salt
+					}, (err, numberAffected, rawResponse) => {
+					   if(err){
+							responce = {'responce':'We were unable to change your password. Please try again.'};
+						}else{
+							responce = {'responce':numberAffected};
+						}
+					});
+				return responce;
+			}
+		},
+		{
+			//******************************** Event Handling ********************************
+			/*
+			
+			*/
+			method:'POST',
+			path: '/api/pack97/event/new',
+			handler: (req,h)=>{
+				connectDB();
+				const {event_name,event_date,reg_close,desc,lead,lead_email,payment, participants} = req.payload;
+				const event = new Event({
+					event_name,
+					event_date,
+					reg_close,
+					desc,
+					lead,
+					lead_email,
+					payment,
+					participants
+				});
+
+				return event.save();
+			}
+		},
+		{
+			/*
+			
+			*/
+			method:'GET',
+			path: '/api/pack97/event/{id}',
+			handler: async (req,h)=>{
+				connectDB();
+				return await Event.findById(req.params.id);
+			}
+		},
+		{
+			/*
+			@method Post
+			@path /api/pack97/parent/add/family
+				
+				Schema
+					Scout:
+						_id: String,
+						family: {
+							bsaid: String,
+							first_name: String,
+							last_name: String,
+							gender: String,
+							rank: String,
+							den: String	
+						}
+					Other:
+						_id: String,
+						family:{
+							first_name: String,
+							last_name: String,
+							gender: String
+						}
+
+
+		 	@description Adds a person to the parent's family attribute, how's _id is passed
+			*/
+			method:'POST',
+			path: '/api/pack97/event/add/attendees',
+			handler: async(req,h)=>{
+				connectDB();
+				const pId = req.payload._id;
+				return await Event.findById(pId, function(err,event){
+					if (err) return handleError(`Could not find parent ${err}`);
+					const attendees = {
+						"contact_id":req.payload._id,
+						"contact_first_name":req.payload.contact_first_name,
+						"contact_last_name":req.payload.contact_last_name,
+						"contact_phone":req.payload.contact_phone,
+						"contact_email":req.payload.contact_email,
+						"verified":req.payload.verified,
+						"attendees":req.payload.attendees.split("|")
+					}
+					event.participants.push(attendees);
+					event.save();
+				});
+			}
+		},
+		{
+			/*
+
+			*/
+			method:'POST',
+			path:'/api/pack97/event/remove/contact',
+			handler: async (req,h) =>{
+				connectDB();
+				return await Event.findById(req.payload._id, function(err,event){
+					if (err) return handleError(`Could not find parent ${err}`);
+					event.participants.splice(req.payload.element,1);
+					event.save();
+				});
+			}
+
+		},
+		{
+			/*
+
+			*/
+			method:'POST',
+			path:'/api/pack97/event/remove/attendees',
+			handler: async (req,h) =>{
+				connectDB();
+				return await Event.findById(req.payload._id, function(err,event){
+					if (err) return handleError(`Could not find parent ${err}`);
+					
+					event.participants[req.payload.pelement].attendees.splice(req.payload.aelement,1);
+					event.save();
+				});
+			}
+
 		}
 	]);
 	await server.start();
 	console.log(`Server running at: ${server.info.uri}`);
 };
+
+let genRandomString = (length) => {
+	return crypto.randomBytes(Math.ceil(length/2))
+		.toString('hex')
+		.slice(0,length);
+}
+
+let sha512 = (password,salt) => {
+	const hash = crypto.createHmac('sha512',salt);
+	hash.update(password);
+	const value = hash.digest('hex');
+	return {
+		salt:salt,
+		passwordHash:value
+	}
+}
 
 init();

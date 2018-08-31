@@ -9,9 +9,11 @@ const ContactSchema = new Schema({
 	title: String,
 	desc: String,
 	email: String,
+	family: [{}],
+	phone: String,
 	isCommitee: Boolean,
 	isLeader: Boolean,
-	pass_hash: String
+	isUser: Boolean
 });
 
 module.exports = mongoose.model('Contact', ContactSchema);

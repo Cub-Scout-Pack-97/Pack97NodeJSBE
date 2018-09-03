@@ -343,6 +343,19 @@ const init = async () => {
 		},
 		{
 			/*
+				@method GET
+				@path /api/pack97/parent/email/{email}
+			 	@description Returns a list of all our parents
+			*/	
+			method:'GET',
+			path: '/api/pack97/contact/email/{email}',
+			handler:(req, reply) =>{
+				connectDB();
+				return Contact.find({email:req.params.email});
+			}
+		},
+		{
+			/*
 			@method Post
 			@path /api/pack97/parent/add/family
 				
@@ -369,13 +382,36 @@ const init = async () => {
 		 	@description Adds a person to the parent's family attribute, how's _id is passed
 			*/
 			method:'POST',
-			path: '/api/pack97/parent/add/family',
+			path: '/api/pack97/contact/add/family',
 			handler:(req,reply)=>{
 				connectDB();
 				const pId = req.payload._id;
 				return Contact.findById(pId, function(err,contact){
 					if (err) return handleError(`Could not find parent ${err}`);
 					contact.family.push(req.payload.family);
+					contact.save();
+				});
+			}
+		},
+		{
+			/*
+				@method Post
+				@path /api/pack97/parent/add/family
+					
+					Schema
+						_id: String,
+						element: Number
+			 	@description Removes the person to the parent's family attribute, how's possition in the array is passed
+			*/
+			method:'POST',
+			path: '/api/pack97/contact/remove/family',
+			handler:(req,reply)=>{
+				connectDB();
+				const pId = req.payload._id;
+				const element = req.payload.element;
+				return Contact.findById(pId, function(err,contact){
+					if (err) return handleError(`Could not find parent ${err}`);
+					contact.family.splice(element,1);
 					contact.save();
 				});
 			}
@@ -400,7 +436,7 @@ const init = async () => {
 			 	@description Returns a list of all our parents
 			*/	
 			method:'GET',
-			path: '/api/pack97/commitee/list',
+			path: '/api/pack97/committee/list',
 			handler:(req, reply) =>{
 				connectDB();
 				return Contact.find().where('isCommitee').equals('true');
@@ -441,6 +477,7 @@ const init = async () => {
 					contact.title = req.payload.title;
 					contact.desc = req.payload.desc;
 					contact.email = req.payload.email;
+					contact.phone = req.payload.phone;
 					contact.isCommitee = req.payload.isCommitee;
 					contact.isLeader = req.payload.isLeader;
 					contact.save();
@@ -566,6 +603,14 @@ const init = async () => {
 				});
 
 				return event.save();
+			}
+		},
+		{
+			method:'GET',
+			path: '/api/pack97/event/list',
+			handler: (req,h) => {
+				connectDB();
+				return Event.find();
 			}
 		},
 		{

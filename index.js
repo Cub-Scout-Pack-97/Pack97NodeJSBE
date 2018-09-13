@@ -55,6 +55,22 @@ const init = async () => {
 		{
 			/*
 				@method GET
+				@path /api/pack97/scout/name/{first_name}/{last_name} 
+					{id} is the _id value
+			 	@description Find an individual Scout by the Mongo definded _id field
+			*/
+			method:'GET',
+			path: '/api/pack97/scout/name/{first_name}/{last_name}',
+			handler:(req, reply) =>{
+				connectDB();
+				const first = req.params.first_name;
+				const last = req.params.last_name;
+				return Scout.find({first_name:new RegExp(first, 'i'),last_name:new RegExp(last, 'i')});
+			}
+		},
+		{
+			/*
+				@method GET
 				@path /api/pack97/scout/list
 			 	@description Returns a list of all our scouts
 			*/
@@ -655,17 +671,17 @@ const init = async () => {
 			path: '/api/pack97/event/add/attendees',
 			handler: async(req,h)=>{
 				connectDB();
-				const pId = req.payload._id;
+				const pId = req.payload.event_id;
 				return await Event.findById(pId, function(err,event){
 					if (err) return handleError(`Could not find parent ${err}`);
 					const attendees = {
-						"contact_id":req.payload._id,
+						"contact_id":req.payload.contact_id,
 						"contact_first_name":req.payload.contact_first_name,
 						"contact_last_name":req.payload.contact_last_name,
 						"contact_phone":req.payload.contact_phone,
 						"contact_email":req.payload.contact_email,
 						"verified":req.payload.verified,
-						"attendees":req.payload.attendees.split("|")
+						"attendees":req.payload.attendees
 					}
 					event.participants.push(attendees);
 					event.save();
@@ -704,7 +720,27 @@ const init = async () => {
 				});
 			}
 
-		}
+		},
+		// {
+		// 	/**/
+
+		// 	method:'GET',
+		// 	path:'/api/pack97/event/isregistered/{event}/{contact}',
+		// 	handler: async (req,h) => {
+		// 		connectDB();
+		// 		const isReg = true;
+		// 		try{
+		// 			const contact = await Event.find({"_id":req.params.event,"participants._id":req.params.contact});
+		// 			if(contact.length === 0){
+		// 				isReg = false;
+		// 			}
+		// 		}catch(err){
+		// 			console.log(err);
+		// 			return false;
+		// 		}
+		// 		return isReg;
+		// 	}
+		// }
 	]);
 	await server.start();
 	console.log(`Server running at: ${server.info.uri}`);

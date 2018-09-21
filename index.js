@@ -606,11 +606,28 @@ const init = async () => {
 			path: '/api/pack97/event/new',
 			handler: (req,h)=>{
 				connectDB();
-				const {event_name,event_date,reg_close,desc,lead,lead_email,payment, participants} = req.payload;
+				const {event_name,event_date,event_time,location,reg_close,enabled,visible,lead_notify,cost_scout,cost_leader,cost_adult,cost_other,child_age_min,child_age_max,cost_other2,child_age_min2,child_age_max2,online_sales,backpacking,tshirt,desc,lead,lead_email,payment, participants} = req.payload;
 				const event = new Event({
 					event_name,
 					event_date,
+					event_time,
+					location,
 					reg_close,
+					enabled,
+					visible,
+					lead_notify,
+					cost_scout,
+					cost_leader,
+					cost_adult,
+					cost_other,
+					child_age_min,
+					child_age_max,
+					cost_other2,
+					child_age_min2,
+					child_age_max2,
+					online_sales,
+					backpacking,
+					tshirt,
 					desc,
 					lead,
 					lead_email,
@@ -622,11 +639,29 @@ const init = async () => {
 			}
 		},
 		{
+			method:'POST',
+			path: '/api/pack97/event/update',
+			handler: async (req,h)=>{
+				connectDB();
+				let responce = {"response":"We're currently experencing an issue. Please try again"};
+				const user = await Event.update({_id:req.payload.event_id}, req.payload, (err, numberAffected, rawResponse) => {
+					   if(err){
+							responce = {'responce':'We were unable to update your event. Please try again.' + err};
+						}else{
+							responce = {'responce':numberAffected};
+						}
+					});
+				return responce;
+			}
+		},
+		{
 			method:'GET',
-			path: '/api/pack97/event/list',
+			path: '/api/pack97/event/list/{field}/{direction}',
 			handler: (req,h) => {
 				connectDB();
-				return Event.find();
+				const field = req.params.field;
+				const direction = req.params.direction;
+				return Event.find().sort({field:direction});
 			}
 		},
 		{

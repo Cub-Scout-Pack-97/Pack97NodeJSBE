@@ -606,13 +606,14 @@ const init = async () => {
 			path: '/api/pack97/event/new',
 			handler: (req,h)=>{
 				connectDB();
-				const {event_name,event_date,event_time,location,reg_close,enabled,visible,lead_notify,cost_scout,cost_leader,cost_adult,cost_other,child_age_min,child_age_max,cost_other2,child_age_min2,child_age_max2,online_sales,backpacking,tshirt,desc,lead,lead_email,payment, participants} = req.payload;
+				const {event_name,event_date,event_time,location,reg_close,select_image,enabled,visible,lead_notify,cost_scout,cost_leader,cost_adult,cost_other,child_age_min,child_age_max,cost_other2,child_age_min2,child_age_max2,online_sales,backpacking,tshirt,desc,lead,lead_email,payment, participants} = req.payload;
 				const event = new Event({
 					event_name,
 					event_date,
 					event_time,
 					location,
 					reg_close,
+					select_image,
 					enabled,
 					visible,
 					lead_notify,

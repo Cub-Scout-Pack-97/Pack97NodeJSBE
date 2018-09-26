@@ -10,6 +10,7 @@ const EventSchema = new Schema({
 	enabled:Boolean,
 	visible:Boolean,
 	lead_notify:Boolean,
+	select_image:String,
 	cost_scout:Schema.Types.Decimal128,
 	cost_leader:Schema.Types.Decimal128,
 	cost_adult:Schema.Types.Decimal128,

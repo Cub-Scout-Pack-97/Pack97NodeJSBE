@@ -660,9 +660,8 @@ const init = async () => {
 			path: '/api/pack97/event/list/{field}/{direction}',
 			handler: (req,h) => {
 				connectDB();
-				const field = req.params.field;
-				const direction = req.params.direction;
-				return Event.find().sort({field:direction});
+				const sort = `{"${req.params.field}":${req.params.direction}}`;
+				return Event.find().sort(JSON.parse(sort));
 			}
 		},
 		{

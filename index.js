@@ -514,31 +514,31 @@ const init = async () => {
 				const pass = req.payload.password;
 				const hashed = sha512(pass,genRandomString(20));
 				const emailFound = await Contact.find({email:email});
-				let responce = {"response":"We're currently experencing an issue. Please try again"};
+				let response = {"response":"We're currently experencing an issue. Please try again"};
 				
 				if(emailFound.length < 1 || emailFound[0].isUser === true){
-					return {'responce':'The email you entered cannot be found or you already have a password'};
+					return {'response':'The email you entered cannot be found or you already have a password'};
 				}
 				const password = new Password({
 					email:email,
 					pass_hash: hashed.passwordHash,
 					pass_sec:hashed.salt});
-				responce = await password.save((err) => {
+				response = await password.save((err) => {
 					if(err){
-						return {'responce':'We were unable to save your password. Please try again.'};
+						return {'response':'We were unable to save your password. Please try again.'};
 					}
 				});
-				responce = await Contact.update({email:email},{
+				response = await Contact.update({email:email},{
 						isUser: true
 					}, (err, numberAffected, rawResponse) => {
 					   if(err){
-							return {'responce':'We were unable to save your password. Please try again.'};
+							return {'response':'We were unable to save your password. Please try again.'};
 						}else{
-							return {'responce':numberAffected};
+							return {'response':numberAffected};
 						}
 					}
 				);
-				return responce;
+				return response;
 			}
 		},
 		{
@@ -554,9 +554,9 @@ const init = async () => {
 				let isValid = {"response":"Either your password or email are incorrect"};
 				const user = await Contact.find({email:email});
 				if(user.length > 0){
-					const hashed = sha512(pass,user[0].pass_sec);\
+					const hashed = sha512(pass,user[0].pass_sec);
 					if(hashed.passwordHash === user[0].pass_hash){
-						isValid = {"responce":"success"};
+						isValid = {"response":"success"};
 					}
 				}
 				return isValid;
@@ -582,19 +582,19 @@ const init = async () => {
 				connectDB();
 				const email = req.payload.email;
 				const hashed = sha512(req.payload.pass,genRandomString(20));
-				let responce = {"response":"We're currently experencing an issue. Please try again"};
+				let response = {"response":"We're currently experencing an issue. Please try again"};
 				const user = await Contact.update({email:email}, 
 					{
 						pass_hash: hashed.passwordHash,
 						pass_sec: hashed.salt
 					}, (err, numberAffected, rawResponse) => {
 					   if(err){
-							responce = {'responce':'We were unable to change your password. Please try again.'};
+							response = {'response':'We were unable to change your password. Please try again.'};
 						}else{
-							responce = {'responce':numberAffected};
+							response = {'response':numberAffected};
 						}
 					});
-				return responce;
+				return response;
 			}
 		},
 		{
@@ -644,15 +644,15 @@ const init = async () => {
 			path: '/api/pack97/event/update',
 			handler: async (req,h)=>{
 				connectDB();
-				let responce = {"response":"We're currently experencing an issue. Please try again"};
+				let response = {"response":"We're currently experencing an issue. Please try again"};
 				const user = await Event.update({_id:req.payload.event_id}, req.payload, (err, numberAffected, rawResponse) => {
 					   if(err){
-							responce = {'responce':'We were unable to update your event. Please try again.' + err};
+							response = {'response':'We were unable to update your event. Please try again.' + err};
 						}else{
-							responce = {'responce':numberAffected};
+							response = {'response':numberAffected};
 						}
 					});
-				return responce;
+				return response;
 			}
 		},
 		{

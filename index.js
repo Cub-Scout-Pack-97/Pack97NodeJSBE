@@ -556,7 +556,11 @@ const init = async () => {
 				if(user.length > 0){
 					const hashed = sha512(pass,user[0].pass_sec);
 					if(hashed.passwordHash === user[0].pass_hash){
-						isValid = {"response":"success"};
+						isValid = {
+							"response":"success",
+							"user": user[0].first_name + " " + user[0].last_name,
+							"id": user[0]._id
+						};
 					}
 				}
 				return isValid;

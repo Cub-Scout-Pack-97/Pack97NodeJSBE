@@ -550,11 +550,11 @@ const init = async () => {
 			handler: async (req,h) => {
 				connectDB();
 				const email = req.payload.email;
-				const pass = req.payload.password;
+				const pass = req.payload.password.toString();
 				let isValid = {"response":"Either your password or email are incorrect"};
-				const user = await Password.find({email:email});
+				const user = await Contact.find({email:email});
 				if(user.length > 0){
-					const hashed = sha512(pass,user[0].pass_sec);
+					const hashed = sha512(pass,user[0].pass_sec);\
 					if(hashed.passwordHash === user[0].pass_hash){
 						isValid = {"responce":"success"};
 					}
@@ -583,7 +583,7 @@ const init = async () => {
 				const email = req.payload.email;
 				const hashed = sha512(req.payload.pass,genRandomString(20));
 				let responce = {"response":"We're currently experencing an issue. Please try again"};
-				const user = await Password.update({email:email}, 
+				const user = await Contact.update({email:email}, 
 					{
 						pass_hash: hashed.passwordHash,
 						pass_sec: hashed.salt

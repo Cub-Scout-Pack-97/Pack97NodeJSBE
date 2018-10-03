@@ -13,7 +13,9 @@ const ContactSchema = new Schema({
 	phone: String,
 	isCommitee: Boolean,
 	isLeader: Boolean,
-	isUser: Boolean
+	isUser: Boolean,
+	pass_sec: String,
+	pass_hash: String
 });
 
 module.exports = mongoose.model('Contact', ContactSchema);

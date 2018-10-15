@@ -341,7 +341,7 @@ const init = async () => {
 			path: '/api/pack97/contact',
 			handler: (req,reply) =>{
 				connectDB();
-				const {bsaid,first_name,last_name,gender,title,desc,email,isCommitee,isLeader} = req.payload;
+				const {bsaid,first_name,last_name,gender,title,desc,email,phone,isCommitee,isLeader,scope} = req.payload;
 				const contact = new Contact({
 					bsaid,
 					first_name,
@@ -350,8 +350,10 @@ const init = async () => {
 					title,
 					desc,
 					email,
+					phone,
 					isCommitee,
-					isLeader
+					isLeader,
+					scope
 				});
 
 				return contact.save();
@@ -365,9 +367,15 @@ const init = async () => {
 			*/	
 			method:'GET',
 			path: '/api/pack97/contact/email/{email}',
-			handler:(req, reply) =>{
+			handler: async (req, reply) =>{
 				connectDB();
-				return Contact.find({email:req.params.email});
+				let contacts = await Contact.find({email:req.params.email});
+				contacts.forEach((contact) => {
+					contact.pass_sec = undefined;
+					contact.pass_hash = undefined;
+				});
+				
+				return contacts;
 			}
 		},
 		{
@@ -440,9 +448,14 @@ const init = async () => {
 			*/	
 			method:'GET',
 			path: '/api/pack97/leader/list',
-			handler:(req, reply) =>{
+			handler: async (req, reply) =>{
 				connectDB();
-				return Contact.find().where('isLeader').equals('true');
+				let contacts = await Contact.find().where('isLeader').equals('true');
+				contacts.forEach((contact) => {
+					contact.pass_sec = undefined;
+					contact.pass_hash = undefined;
+				});
+				return contacts;
 			}
 		},
 		{
@@ -453,9 +466,32 @@ const init = async () => {
 			*/	
 			method:'GET',
 			path: '/api/pack97/committee/list',
-			handler:(req, reply) =>{
+			handler: async (req, reply) =>{
 				connectDB();
-				return Contact.find().where('isCommitee').equals('true');
+				let contacts = await Contact.find().where('isCommitee').equals('true');
+				contacts.forEach((contact) => {
+					contact.pass_sec = undefined;
+					contact.pass_hash = undefined;
+				});
+				return contacts;
+			}
+		},
+		{
+			/*
+				@method GET
+				@path /api/pack97/leader/list
+			 	@description Returns a list of all our parents
+			*/	
+			method:'GET',
+			path: '/api/pack97/contact/list',
+			handler: async (req, reply) =>{
+				connectDB();
+				let contacts = await Contact.find();
+				contacts.forEach((contact) => {
+					contact.pass_sec = undefined;
+					contact.pass_hash = undefined;
+				});
+				return contacts;
 			}
 		},
 		{
@@ -496,6 +532,7 @@ const init = async () => {
 					contact.phone = req.payload.phone;
 					contact.isCommitee = req.payload.isCommitee;
 					contact.isLeader = req.payload.isLeader;
+					contact.scope = req.payload.scope;
 					contact.save();
 				});
 			}
@@ -559,7 +596,8 @@ const init = async () => {
 						isValid = {
 							"response":"success",
 							"user": user[0].first_name + " " + user[0].last_name,
-							"id": user[0]._id
+							"id": user[0]._id,
+							"scope": user[0].scope
 						};
 					}
 				}

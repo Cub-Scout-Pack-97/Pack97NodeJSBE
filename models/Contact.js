@@ -13,7 +13,7 @@ const ContactSchema = new Schema({
 	phone: String,
 	isCommitee: Boolean,
 	isLeader: Boolean,
-	scope:[],
+	scope:[String],
 	// isEventsAdmin: Boolean,
 	// isHikingAdmin: Boolean,
 	// isContactsAdmin: Boolean,

@@ -532,7 +532,7 @@ const init = async () => {
 					contact.phone = req.payload.phone;
 					contact.isCommitee = req.payload.isCommitee;
 					contact.isLeader = req.payload.isLeader;
-					contact.scope = req.payload.scope;
+					contact.scope = req.payload.scope.split(",");
 					contact.save();
 				});
 			}

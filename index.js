@@ -380,6 +380,22 @@ const init = async () => {
 		},
 		{
 			/*
+				@method GET
+				@path /api/pack97/parent/email/{email}
+			 	@description Returns a list of all our parents
+			*/	
+			method:'GET',
+			path: '/api/pack97/contact/id/{id}',
+			handler: async (req, reply) =>{
+				connectDB();
+				let contact = await Contact.findById(req.params.id);
+				contact.pass_sec = undefined;
+				contact.pass_hash = undefined;
+				return contact;
+			}
+		},
+		{
+			/*
 			@method Post
 			@path /api/pack97/parent/add/family
 				
@@ -532,7 +548,21 @@ const init = async () => {
 					contact.phone = req.payload.phone;
 					contact.isCommitee = req.payload.isCommitee;
 					contact.isLeader = req.payload.isLeader;
-					contact.scope = req.payload.scope.split(",");
+					contact.isUser = req.payload.isUser;
+					contact.scope = req.payload.scope;
+					contact.save();
+				});
+			}
+		},
+		{
+			method:'POST',
+			path: '/api/pack97/contact/update/isUser',
+			handler:(req,reply)=>{
+				connectDB();
+				const cId = req.payload._id;
+				return Contact.findById(cId, function(err,contact){
+					if (err) return handleError(`Could not find parent ${err}`);
+					contact.isUser = req.payload.isUser;
 					contact.save();
 				});
 			}
@@ -547,13 +577,14 @@ const init = async () => {
 			path:'/api/pack97/password/new',
 			handler: async (req,reply) => {
 				connectDB();
+				const id = req.payload._id;
 				const email = req.payload.email;
 				const pass = req.payload.password;
 				const hashed = sha512(pass,genRandomString(20));
 				const emailFound = await Contact.find({email:email});
 				let response = {"response":"We're currently experencing an issue. Please try again"};
 				
-				if(emailFound.length < 1 || emailFound[0].isUser === true){
+				if(emailFound.length < 1 && emailFound[0].isUser !== true && emailFound._id !== id ){
 					return {'response':'The email you entered cannot be found or you already have a password'};
 				}
 				const password = new Password({

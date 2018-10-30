@@ -14,9 +14,7 @@ const ContactSchema = new Schema({
 	isCommitee: Boolean,
 	isLeader: Boolean,
 	scope:[String],
-	// isEventsAdmin: Boolean,
-	// isHikingAdmin: Boolean,
-	// isContactsAdmin: Boolean,
+	isUser: Boolean,
 	pass_sec: String,
 	pass_hash: String
 });

@@ -15,11 +15,8 @@ RUN git clone https://github.com/johnkelley4477/Pack97NodeJSBE.git
 ## Create Working Dir
 WORKDIR /Pack97NodeJSBE
 
-## Checkout develop branch (dev)
-RUN git checkout develop
-
 ## Delete GIT
-## RUN apk del git
+RUN apk del git
 
 ## Install Nodemon (dev) 
 RUN npm install -g nodemon

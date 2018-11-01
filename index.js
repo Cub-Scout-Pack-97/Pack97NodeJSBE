@@ -169,157 +169,6 @@ const init = async () => {
 				});
 			}
 		},
-		//{
-		// 	// ****************************************** Parents Routes ************************
-		// 	/*
-		// 		@method GET
-		// 		@path /api/pack97/parent/id/{id}
-		// 			{id} is the _id value
-		// 	 	@description Returns the parent how's _id is passed
-		// 	*/
-		// 	method:'GET',
-		// 	path: '/api/pack97/parent/id/{id}',
-		// 	handler:(req, reply) =>{
-		// 		connectDB();
-		// 		const id = req.params.id;
-		// 		return Parent.findById(id);
-		// 	}
-		// },
-		// {
-		// 	/*
-		// 		@method GET
-		// 		@path /api/pack97/parent/list
-		// 	 	@description Returns a list of all our parents
-		// 	*/	
-		// 	method:'GET',
-		// 	path: '/api/pack97/parent/list',
-		// 	handler:(req, reply) =>{
-		// 		connectDB();
-		// 		return Parent.find({});
-		// 	}
-		// },
-		// {
-		// 	/*
-		// 		@method GET
-		// 		@path /api/pack97/parent/email/{email}
-		// 	 	@description Returns a list of all our parents
-		// 	*/	
-		// 	method:'GET',
-		// 	path: '/api/pack97/parent/email/{email}',
-		// 	handler:(req, reply) =>{
-		// 		connectDB();
-		// 		return Parent.find({email:req.params.email});
-		// 	}
-		// },
-		// {
-		// 	/*
-		// 		@method POST
-		// 		@path /api/pack97/parent
-		// 			Parent:
-		// 				{
-		// 					bsaid: String,
-		// 					first_name: String,
-		// 					last_name: String,
-		// 					gender: String,
-		// 					family: [{}],
-		// 					phone: String,
-		// 					email: String
-		// 				}
-		// 	 	@description Add a Parent
-		// 	*/
-		// 	method:'POST',
-		// 	path: '/api/pack97/parent',
-		// 	handler: (req,reply) =>{
-		// 		connectDB();
-		// 		const {bsaid,first_name,last_name,gender,family,phone,email} = req.payload;
-		// 		const parent = new Parent({
-		// 			bsaid,
-		// 			first_name,
-		// 			last_name,
-		// 			gender,
-		// 			family,
-		// 			phone,
-		// 			email
-		// 		});
-
-		// 		return parent.save();
-		// 	}
-		// },
-		// {
-		// 	/*
-		// 		@method GET
-		// 		@path /api/pack97/parent/del/{id}
-		// 			{id} is the _id value
-		// 	 	@description Removes the parent how's _id is passed
-		// 	*/
-		// 	method:'GET',
-		// 	path: '/api/pack97/parent/del/{id}',
-		// 	handler: (req,reply)=>{
-		// 		connectDB();
-		// 		return Parent.deleteOne({_id:req.params.id});
-		// 	}
-		// },
-		
-		// {
-		// 	/*
-		// 		@method Post
-		// 		@path /api/pack97/parent/add/family
-					
-		// 			Schema
-		// 				_id: String,
-		// 				element: Number
-		// 	 	@description Removes the person to the parent's family attribute, how's possition in the array is passed
-		// 	*/
-		// 	method:'POST',
-		// 	path: '/api/pack97/parent/remove/family',
-		// 	handler:(req,reply)=>{
-		// 		connectDB();
-		// 		const pId = req.payload._id;
-		// 		const element = req.payload.element;
-		// 		return Parent.findById(pId, function(err,parent){
-		// 			if (err) return handleError(`Could not find parent ${err}`);
-		// 			parent.family.splice(element,1);
-		// 			parent.save();
-		// 		});
-		// 	}
-		// },
-		// {
-		// 	/*
-		// 		@method Post
-		// 		@path /api/pack97/parent/update
-					
-		// 			Schema
-		// 				Parent:
-		// 					{
-		// 						bsaid: String,
-		// 						first_name: String,
-		// 						last_name: String,
-		// 						gender: String,
-		// 						family: [{}],
-		// 						phone: String,
-		// 						email: String
-		// 					}
-
-		// 	 	@description Updates the parent's info, how's _id is passed
-		// 	*/
-		// 	method:'POST',
-		// 	path: '/api/pack97/parent/update',
-		// 	handler:(req,reply)=>{
-		// 		connectDB();
-		// 		const pId = req.payload._id;
-		// 		return Parent.findById(pId, function(err,parent){
-		// 			if (err) return handleError(`Could not find parent ${err}`);
-		// 			parent.bsaid = req.payload.bsaid;
-		// 			parent.first_name = req.payload.first_name;
-		// 			parent.last_name = req.payload.last_name;
-		// 			parent.gender = req.payload.gender;
-		// 			parent.family = req.payload.family;
-		// 			parent.phone = req.payload.phone;
-		// 			parent.email = req.payload.email;
-		// 			parent.save();
-		// 		});
-		// 	}
-		// },
 		{
 			/************************************** Contacts Info ******************************/
 			/*
@@ -587,20 +436,7 @@ const init = async () => {
 				if(emailFound.length < 1 && emailFound[0].isUser !== true && emailFound[0]._id !== id ){
 					return {'response':'The email you entered cannot be found or you already have a password'};
 				}else{
-					// const password = new Password({
-					// 	email:email,
-					// 	pass_hash: hashed.passwordHash,
-					// 	pass_sec:hashed.salt
-					// });
-					
-					// response = await password.save((err) => {
-					// 	if(err){
-					// 		return {'response':'We were unable to save your password. Please try again.'};
-					// 	}
-					// });
-
 					response = await Contact.update({email:email},{
-							isUser: true,
 							pass_hash: hashed.passwordHash,
 							pass_sec: hashed.salt
 						}, (err, numberAffected, rawResponse) => {
@@ -652,28 +488,6 @@ const init = async () => {
 				connectDB();
 				const user = await Password.find({pass_sec:req.params.secret});
 				return user[0].email;
-			}
-		},
-		{
-			method:'POST',
-			path: '/api/pack97/password/update',
-			handler: async (req,reply)=>{
-				connectDB();
-				const email = req.payload.email;
-				const hashed = sha512(req.payload.pass,genRandomString(20));
-				let response = {"response":"We're currently experencing an issue. Please try again"};
-				const user = await Contact.update({email:email}, 
-					{
-						pass_hash: hashed.passwordHash,
-						pass_sec: hashed.salt
-					}, (err, numberAffected, rawResponse) => {
-					   if(err){
-							response = {'response':'We were unable to change your password. Please try again.'};
-						}else{
-							response = {'response':numberAffected};
-						}
-					});
-				return response;
 			}
 		},
 		{

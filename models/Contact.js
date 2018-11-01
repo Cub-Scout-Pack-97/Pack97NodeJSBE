@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+
 const ContactSchema = new Schema({
 	bsaid: String,
 	first_name: String,

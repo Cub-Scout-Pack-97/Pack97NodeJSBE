@@ -584,29 +584,35 @@ const init = async () => {
 				const emailFound = await Contact.find({email:email});
 				let response = {"response":"We're currently experencing an issue. Please try again"};
 				
-				if(emailFound.length < 1 && emailFound[0].isUser !== true && emailFound._id !== id ){
+				if(emailFound.length < 1 && emailFound[0].isUser !== true && emailFound[0]._id !== id ){
 					return {'response':'The email you entered cannot be found or you already have a password'};
-				}
-				const password = new Password({
-					email:email,
-					pass_hash: hashed.passwordHash,
-					pass_sec:hashed.salt});
-				response = await password.save((err) => {
-					if(err){
-						return {'response':'We were unable to save your password. Please try again.'};
-					}
-				});
-				response = await Contact.update({email:email},{
-						isUser: true
-					}, (err, numberAffected, rawResponse) => {
-					   if(err){
-							return {'response':'We were unable to save your password. Please try again.'};
-						}else{
-							return {'response':numberAffected};
+				}else{
+					// const password = new Password({
+					// 	email:email,
+					// 	pass_hash: hashed.passwordHash,
+					// 	pass_sec:hashed.salt
+					// });
+					
+					// response = await password.save((err) => {
+					// 	if(err){
+					// 		return {'response':'We were unable to save your password. Please try again.'};
+					// 	}
+					// });
+
+					response = await Contact.update({email:email},{
+							isUser: true,
+							pass_hash: hashed.passwordHash,
+							pass_sec: hashed.salt
+						}, (err, numberAffected, rawResponse) => {
+						   if(err){
+								return {'response':'We were unable to save your password. Please try again.'};
+							}else{
+								return {'response':numberAffected};
+							}
 						}
-					}
-				);
-				return response;
+					);
+					return response;
+				}
 			}
 		},
 		{
